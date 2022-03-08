@@ -26,6 +26,6 @@ setup(
         "Operating System :: OS Independent",
     ],
     python_requires=">=3.6",
-    install_requires=["tensorboard<2", "pillow>=7.0.0", "setuptools==59.5.0"],
+    install_requires=["tensorboard", "pillow>=7.0.0", "setuptools==59.5.0"],
     entry_points={"console_scripts": ["style-transfer = style_transfer.__main__:main"]},
 )

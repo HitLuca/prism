@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 torch = {file="https://download.pytorch.org/whl/cu111/torch-1.9.0%2Bcu111-cp37-cp37m-linux_x86_64.whl"}
 torchvision = {file = "https://download.pytorch.org/whl/cu111/torchvision-0.10.0%2Bcu111-cp37-cp37m-linux_x86_64.whl"}
-tensorboard = "<2"
+tensorboard = "*"
 Pillow = ">=7.0.0"
 setuptools = "==59.5.0"
 

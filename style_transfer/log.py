@@ -1,6 +1,9 @@
+import logging
 import torch
 from torch.utils.tensorboard import SummaryWriter
 from time import time
+
+logger = logging.getLogger(__name__)
 
 
 class Logger(SummaryWriter):
@@ -15,7 +18,7 @@ class Logger(SummaryWriter):
         content_losses, style_losses = losses[3:]
         mean_abs_grad = torch.abs(artwork.grad).mean().item()
         zeros_grad = (artwork.grad == 0).sum().item()
-        print(
+        logger.info(
             f"Iteration: {iter:<10}"
             f"Time: {iter_time:<15.3}"
             f"Loss: {total_loss:<15.1e}"
