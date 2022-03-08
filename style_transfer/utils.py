@@ -1,5 +1,6 @@
 import torch
 
+
 def gram_matrix(input, feature_norm):
     b, c, h, w = input.size()
     feature_maps = input.view(b * c, h * w)
@@ -7,6 +8,7 @@ def gram_matrix(input, feature_norm):
         matrix = feature_maps.float() @ feature_maps.t().float()
     norm = b * c * h * w if feature_norm else h * w
     return matrix / norm
+
 
 def match_color(content, style, eps=1e-5):
     content_pixels, style_pixels = content.view(3, -1), style.view(3, -1)
@@ -25,4 +27,4 @@ def match_color(content, style, eps=1e-5):
     weights = cov_style_sqrt @ cov_content_sqrt.inverse()
     bias = mean_style - weights @ mean_content
     content_pixels = weights @ content_pixels + bias.view(3, 1)
-    return content_pixels.clamp(0,1).view_as(content)
+    return content_pixels.clamp(0, 1).view_as(content)
