@@ -1,8 +1,12 @@
+import logging
+
 import torch
+import time
 from .data import Preprocess, Postprocess
 from .loss import VGG19Loss
 from .amp import GradScaler
-from .log import Logger
+
+logger = logging.getLogger(__name__)
 
 
 class StyleTransfer(object):
@@ -123,11 +127,11 @@ class StyleTransfer(object):
             content, style, area, init_random, init_img
         )
         i = 0
-        if self.logging:
-            logger = Logger(i)
+
         while i <= iter:
 
             def closure():
+                start_time = time.time()
                 optimizer.zero_grad()
                 with torch.cuda.amp.autocast(enabled=self.use_amp):
                     losses = self.criterion(artwork.to(self.device))
@@ -137,12 +141,25 @@ class StyleTransfer(object):
                 nonlocal i
                 i += 1
                 if self.logging and (i % self.logging == 0):
-                    logger(i, losses, artwork, scaler)
+                    iter_time = time.time() - start_time
+                    total_loss, content_loss, style_loss = [
+                        loss.item() for loss in losses[0:3]
+                    ]
+                    mean_abs_grad = torch.abs(artwork.grad).mean().item()
+                    zeros_grad = (artwork.grad == 0).sum().item()
+                    logger.info(
+                        f"Iteration: {i:<10}"
+                        f"Time: {iter_time:<15.3}"
+                        f"Loss: {total_loss:<15.1e}"
+                        f"Content Loss: {content_loss:<15.1e}"
+                        f"Style Loss: {style_loss:<15.1e}"
+                        f"Mean Abs Grad: {mean_abs_grad:<15.1e}"
+                        f"Grad Zeros: {zeros_grad:<5}"
+                        f"Grad Scale: {scaler.scale_factor:<5.1e}"
+                    )
                 return total_loss
 
             optimizer.step(closure)
-        if self.logging:
-            logger.close()
         self.criterion.reset()
         return self.postprocess(artwork)
 
