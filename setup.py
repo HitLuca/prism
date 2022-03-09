@@ -27,5 +27,7 @@ setup(
     ],
     python_requires=">=3.6",
     install_requires=["tensorboard", "pillow>=7.0.0", "setuptools==59.5.0"],
-    entry_points={"console_scripts": ["style-transfer = style_transfer.__main__:main"]},
+    entry_points={
+        "console_scripts": ["prism-style-transfer = prism_style_transfer.__main__:main"]
+    },
 )
